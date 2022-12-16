@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProActivity.API.Data;
 using ProActivity.API.Models;
 
 namespace ProActivity.API.Controllers
@@ -11,35 +12,66 @@ namespace ProActivity.API.Controllers
     [Route("api/[controller]")]
     public class ActivityController : ControllerBase
     {
-        public IEnumerable<Activity> Activities = new List<Activity>() {
-            new Activity(1),
-            new Activity(2),
-            new Activity(3)
-        };
+        #region [ Attributes ]
+
+        private readonly DataContext _context;
+
+        #endregion
+
+        #region [ Constructor ]
+
+        public ActivityController(DataContext context)
+        {
+            _context = context;
+        }
+
+        #endregion
+
+        #region [ Public Methods ]
 
         [HttpGet]
         public IEnumerable<Activity> Search() {
-            return Activities;
+            return _context.Activities;
         }   
 
         [HttpGet("{id}")]
         public Activity Get(int id) {
-            return Activities.FirstOrDefault(a => a.Id == id);
+            return _context.Activities.FirstOrDefault(a => a.Id == id);
         }   
 
         [HttpPost]
         public IEnumerable<Activity> Add(Activity activity) {
-            return Activities.Append<Activity>(activity);
+            if (activity == null) return new List<Activity>();
+
+            _context.Activities.Add(activity);
+            if (_context.SaveChanges() > 0)
+                return _context.Activities;
+            else
+                throw new Exception("Transaction is invalid!");    
         }   
 
         [HttpPut("{id}")]
-        public string Update(int id) {
-            return "primeiro método Put";
+        public Activity Update(int id, Activity activity) {
+            if (activity.Id != id) throw new Exception("Transaction is invalid!");
+
+            _context.Update(activity);
+            if (_context.SaveChanges() > 0)
+                return _context.Activities.FirstOrDefault(a => a.Id == id);
+            else
+                return new Activity();    
         }   
 
         [HttpDelete("{id}")]
-        public string Delete(int id) {
-            return "primeiro método Delete";
+        public bool Delete(int id) {
+            var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
+            if (activity == null)
+                throw new Exception("Transaction is invalid!");
+
+            _context.Remove(activity);    
+
+            return _context.SaveChanges() > 0;
         }   
+
+        #endregion
     }
 }

@@ -1,3 +1,5 @@
+using ProActivity.API.Models.Enums;
+
 namespace ProActivity.API.Models
 {
     public class Activity
@@ -24,7 +26,7 @@ namespace ProActivity.API.Models
 
         public string Description { get; set; }
 
-        public string Priority { get; set; }
+        public EPriority Priority { get; set; }
 
         #endregion
     }
