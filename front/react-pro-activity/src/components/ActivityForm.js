@@ -51,7 +51,6 @@ export default function ActivityForm(props) {
 
   return (
     <>
-      <h1>Activity {activity.id !== 0 ? activity.id : ""}</h1>
       <form className="row g-3" onSubmit={submitHandler}>
         <div className="col-md-6">
           <label className="form-label">Title</label>
@@ -73,10 +72,10 @@ export default function ActivityForm(props) {
             id="priority"
             className="form-select"
           >
-            <option defaultValue="0">Choose...</option>
-            <option value="1">Low</option>
-            <option value="2">Normal</option>
-            <option value="3">High</option>
+            <option defaultValue="Not Defined">Choose...</option>
+            <option value="Low">Low</option>
+            <option value="Normal">Normal</option>
+            <option value="High">High</option>
           </select>
         </div>
         <div className="col-md-12">
@@ -94,11 +93,11 @@ export default function ActivityForm(props) {
         <div className="col-12 mt-0">
           {activity.id === 0 ? (
             <button
-              className="btn btn-outline-secondary"
+              className="btn btn-outline-success"
               type="submit"
             >
               <i className="fas fa-plus me-2"></i>
-              Activity
+              Save
             </button>
           ) : (
             <>

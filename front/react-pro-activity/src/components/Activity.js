@@ -2,13 +2,11 @@ import React from "react";
 
 export default function Activity(props) {
   function priorityLabel(choice) {
-    switch (parseInt(choice)) {
-      case 1:
-        return "Low";
-      case 2:
-        return "Normal";
-      case 3:
-        return "High";
+    switch (choice) {
+      case 'Low':
+      case 'Normal':
+      case 'High':
+        return choice;
 
       default:
         return "Not Defined";
@@ -17,11 +15,11 @@ export default function Activity(props) {
 
   function priorityImage(choice, icon) {
     switch (choice) {
-      case 1:
+      case 'Low':
         return icon ? "smile" : "success";
-      case 2:
+      case 'Normal':
         return icon ? "meh" : "dark";
-      case 3:
+      case 'High':
         return icon ? "frown" : "warning";
 
       default:
@@ -69,7 +67,7 @@ export default function Activity(props) {
           </button>
           <button
             className="btn btn-sm btn-outline-danger"
-            onClick={() => props.deleteActivity(props.activity.id)}
+            onClick={() => props.toogleConfirmModal(props.activity.id)}
           >
             <i className="fas fa-trash me-2"></i>
             Delete

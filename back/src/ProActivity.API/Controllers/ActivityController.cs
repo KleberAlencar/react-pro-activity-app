@@ -40,12 +40,12 @@ namespace ProActivity.API.Controllers
         }   
 
         [HttpPost]
-        public IEnumerable<Activity> Add(Activity activity) {
-            if (activity == null) return new List<Activity>();
+        public Activity Add(Activity activity) {
+            if (activity == null) return new Activity();
 
             _context.Activities.Add(activity);
             if (_context.SaveChanges() > 0)
-                return _context.Activities;
+                return _context.Activities.FirstOrDefault(a => a.Id == activity.Id);
             else
                 throw new Exception("Transaction is invalid!");    
         }   
