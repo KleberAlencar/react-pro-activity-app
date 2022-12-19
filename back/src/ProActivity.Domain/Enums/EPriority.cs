@@ -1,4 +1,4 @@
-namespace ProActivity.API.Models.Enums
+namespace ProActivity.Domain.Enums
 {
     public enum EPriority
     {

@@ -1,7 +1,9 @@
-using ProActivity.API.Models;
+
+using ProActivity.Data.Mappings;
+using ProActivity.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ProActivity.API.Data
+namespace ProActivity.Data.Context
 {
     public class DataContext : DbContext
     {
@@ -10,5 +12,9 @@ namespace ProActivity.API.Data
         }
 
         public DbSet<Activity> Activities { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.ApplyConfiguration(new ActivityMap());
+        }
     }
 }

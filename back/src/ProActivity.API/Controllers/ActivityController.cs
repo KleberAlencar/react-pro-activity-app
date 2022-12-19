@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProActivity.API.Data;
-using ProActivity.API.Models;
+using ProActivity.Domain.Entities;
+using ProActivity.Domain.Entities.Filters;
+using ProActivity.Domain.Interfaces.Services;
 
 namespace ProActivity.API.Controllers
 {
@@ -14,62 +12,64 @@ namespace ProActivity.API.Controllers
     {
         #region [ Attributes ]
 
-        private readonly DataContext _context;
+        private readonly IActivityService _service;
 
         #endregion
 
         #region [ Constructor ]
 
-        public ActivityController(DataContext context)
+        public ActivityController(IActivityService service)
         {
-            _context = context;
+            _service = service;
         }
 
         #endregion
 
         #region [ Public Methods ]
 
-        [HttpGet]
-        public IEnumerable<Activity> Search() {
-            return _context.Activities;
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id) {
+            ActivityQuery filterActivity = new ActivityQuery {
+                Id = id
+            };
+            var activity = await _service.Get(filterActivity);
+            if (activity == null) return NoContent();
+
+            return Ok(activity);
         }   
 
-        [HttpGet("{id}")]
-        public Activity Get(int id) {
-            return _context.Activities.FirstOrDefault(a => a.Id == id);
+        [HttpGet]
+        public async Task<IActionResult> Search() {
+            var activities = await _service.Search();
+            if (activities == null) return NoContent();
+
+            return Ok(activities);
         }   
 
         [HttpPost]
-        public Activity Add(Activity activity) {
-            if (activity == null) return new Activity();
+        public async Task<IActionResult> Add(Activity activity) {
+            var returnActivity = await _service.Add(activity);
+            if (returnActivity == null) return NoContent();
 
-            _context.Activities.Add(activity);
-            if (_context.SaveChanges() > 0)
-                return _context.Activities.FirstOrDefault(a => a.Id == activity.Id);
-            else
-                throw new Exception("Transaction is invalid!");    
+            return Ok(activity);
         }   
 
         [HttpPut("{id}")]
-        public Activity Update(int id, Activity activity) {
-            if (activity.Id != id) throw new Exception("Transaction is invalid!");
+        public async Task<IActionResult> Update(int id, Activity activity) {
+            var returnActivity = await _service.Update(activity);
+            if (returnActivity == null) return NoContent();
 
-            _context.Update(activity);
-            if (_context.SaveChanges() > 0)
-                return _context.Activities.FirstOrDefault(a => a.Id == id);
-            else
-                return new Activity();    
+            return Ok(activity);
         }   
 
         [HttpDelete("{id}")]
-        public bool Delete(int id) {
-            var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
-            if (activity == null)
-                throw new Exception("Transaction is invalid!");
-
-            _context.Remove(activity);    
-
-            return _context.SaveChanges() > 0;
+        public async Task<IActionResult> Delete(int id) {
+            if (await _service.Delete(id)) {
+                return Ok(new { message = "Deleted" });
+            }
+            else {
+                return BadRequest($"Error when trying to delete id {id}");
+            }
         }   
 
         #endregion

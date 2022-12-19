@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using ProActivity.API.Data;
+using ProActivity.Data.Context;
+using ProActivity.Data.Repositories;
+using ProActivity.Domain.Interfaces.Repositories;
+using ProActivity.Domain.Interfaces.Services;
+using ProActivity.Domain.Services;
 
 namespace ProActivity.API
 {
@@ -32,6 +29,11 @@ namespace ProActivity.API
             services.AddDbContext<DataContext>(
                 options => options.UseSqlite(Configuration.GetConnectionString("Default"))
             );    
+
+            services.AddScoped<IActivityRepository, ActivityRepository>();
+            services.AddScoped<IGeneralRepository, GeneralRepository>();
+            services.AddScoped<IActivityService, ActivityService>();
+
             services.AddControllers()
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
