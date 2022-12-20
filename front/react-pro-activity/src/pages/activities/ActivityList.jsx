@@ -1,12 +1,12 @@
 import React from 'react'
-import Activity from './Activity'
+import ActivityItem from './ActivityItem'
 
 export default function ActivityList(props) {
   return (
     <div className="mt-3">
     <ul className="list-group">
       {props.activities.map((activity) => (
-        <Activity
+        <ActivityItem
           key={activity.id}
           activity={activity}
           getActivity={props.getActivity}
