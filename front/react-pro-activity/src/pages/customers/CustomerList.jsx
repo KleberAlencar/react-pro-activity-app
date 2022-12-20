@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, FormControl, InputGroup } from "react-bootstrap";
 import TitlePage from "../../components/TitlePage";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const customers = [
   {
@@ -42,7 +42,7 @@ const customers = [
 ];
 
 export default function CustomerList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -56,7 +56,7 @@ export default function CustomerList() {
   });
 
   const addCustomer = () => {
-    history.push("/customer/detail");
+    navigate("/customer/detail");
   };
 
   return (
@@ -98,7 +98,7 @@ export default function CustomerList() {
                   <button
                     className="btn btn-sm btn-outline-primary me-2"
                     onClick={() =>
-                      history.push(`/customers/details/${customer.id}`)
+                      navigate(`/customers/details/${customer.id}`)
                     }
                   >
                     <i className="fas fa-user-edit me-2"></i>
